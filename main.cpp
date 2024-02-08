@@ -4,129 +4,169 @@
 #include <algorithm>
 #include <string>
 
+#include "Employee.h"
+#include "myStack.h"
+#include "myQueue.h"
+
+
 using namespace std;
 
-// KEY CLASS
-class Employee {
-private:
-    string firstName;
-    string lastName;
-    string socsecnum;
-    string deptNum;
-    double wage;
-public:
-    // Default constructor
-    Employee(): firstName(""), lastName(""), socsecnum(""), deptNum(""), wage(0.0) {}
-    Employee(string fName, string lName, string ssn, string dept, double w): firstName(fName), lastName(lName), socsecnum(ssn), deptNum(dept), wage(w) {}
-
-    // Setters
-    void setFirstName(string fName) { firstName = fName; }
-    void setLastName(string lName) { lastName = lName; }
-    void setSocSecNum(string ssn) { socsecnum = ssn; }
-    void setDeptNum(string dept) { deptNum = dept; }
-    void setWage(double w) { wage = w; }
-
-    // Getters
-    string getFirstName() const { return firstName; }
-    string getLastName() const { return lastName; }
-    string getSocSecNum() const { return socsecnum; }
-    string getDeptNum() const { return deptNum; }
-    double getWage() const { return wage; }
-
-    friend ostream & operator<<(ostream & out, const Employee & E); // PUT THIS in MAIN
-    bool operator<(const Employee & other) const;
-};
-
-ostream & operator<<(ostream & out, const Employee & E) {
-    out << E.getLastName() << " " << E.getFirstName() << " " << E.getSocSecNum() << " " << E.getDeptNum() << " " << E.getWage();
-    return out;
-}
-
-bool Employee::operator<(const Employee & other) const {
-    if (deptNum != other.deptNum)
-        return deptNum < other.deptNum;
-    if (lastName != other.lastName)
-        return lastName < other.lastName;
-    return firstName < other.firstName;
-}
-
-class myStack {
-private:
-    vector<Employee> elts;
-public:
-    const vector<Employee> & getElts() const { return elts; } // Marked as const
-    void Push(Employee emp) { elts.push_back(emp); }
-    Employee Pop();
-    bool isEmpty() const { return elts.empty(); }
-    void printStack() const;
-
-    myStack operator+(const myStack& other) const; // Marked as const
-};
-
-
-
-Employee myStack::Pop() {
-    if (!isEmpty()) {
-        Employee top = elts.back();
-        elts.pop_back();
-        return top;
-    }
-    // You might want to throw an exception here for an empty stack
-    return Employee();
-}
-
-void myStack::printStack() const {
-    for (auto it = elts.rbegin(); it != elts.rend(); ++it) {
-        cout << *it << endl;
-    }
-}
-
-myStack myStack::operator+(const myStack& other) const {
-    myStack temp = *this;
-    for (const auto &emp : other.getElts()) { // getElts() is called on a const object, so it needs to be a const function
-        temp.Push(emp);
-    }
-    return temp;
-}
-
-
-class myQueue {
-private:
-    vector<Employee> elts;
-public:
-    const vector<Employee> & getElts() const { return elts; } // Marked as const
-    void Enqueue(const Employee& emp) { elts.push_back(emp); } // corrected Enqueue method
-    Employee Dequeue();
-    bool isEmpty() const { return elts.empty(); }
-    void printQueue() const;
-
-    myQueue operator+(const myQueue& other) const; // Marked as const
-};
-
-Employee myQueue::Dequeue() {
-    if (!isEmpty()) {
-        Employee front = elts.front();
-        elts.erase(elts.begin());
-        return front;
-    }
-    // You might want to throw an exception here for an empty queue
-    return Employee();
-}
-
-void myQueue::printQueue() const {
-    for (const auto &emp : elts) {
-        cout << emp << endl;
-    }
-}
-
-myQueue myQueue::operator+(const myQueue& other) const {
-    myQueue temp = *this;
-    for (const auto &emp : other.getElts()) { // getElts() is called on a const object, so it needs to be a const function
-        temp.Enqueue(emp);
-    }
-    return temp;
-}
-
+// open and read from a datafile, path entered by user
 int main() {
+    // create myStack and myQueue obj
+    myStack S1;
+    myQueue Q1;
+    // file inputs
+    string path1, path2;
+    ifstream file1(path1), file2(path2);
+
+    // open and read the file
+    cout << "Please enter a path for file #1: ";
+    cin >> path1;
+    cout << "Please enter a path for file #2: ";
+    cin >> path2;
+
+    // create variable for the form
+    string lName, fName, ssn, dept;
+    double wage;
+
+    // Read file1 to the end
+    while (file1 >> lName >> fName >> ssn >> dept >> wage) {
+        // create 2 Employee records
+        Employee emp1(fName, lName, ssn, dept, wage);
+        Employee emp2(fName, lName, ssn, dept, wage);
+
+        S1.Push(emp1);
+        Q1.Enqueue(emp2);
+    }
+    file1.close();
+
+    // create myStack and myQueue obj
+    myStack S2;
+    myQueue Q2;
+    // Read file #2
+    while (file2 >> lName >> fName >> ssn >> dept >> wage) {
+        // create 2 Employee records
+        Employee emp1(fName, lName, ssn, dept, wage);
+        Employee emp2(fName, lName, ssn, dept, wage);
+
+        S2.Push(emp1);
+        Q2.Enqueue(emp2);
+    }
+    // Close the second input file
+    file2.close();
+
+    // Print stack #1
+    cout << "STACK #1" << endl;
+    cout << "_______" << endl;
+    S1.printStack();
+    cout << endl;
+
+    // Print queue #1
+    cout << "QUEUE #1" << endl;
+    cout << "_______" << endl;
+    Q1.printQueue();
+    cout << endl;
+
+    // Print stack #2
+    cout << "STACK #2" << endl;
+    cout << "_______" << endl;
+    S2.printStack();
+    cout << endl;
+
+    // Print queue #2
+    cout << "QUEUE #2" << endl;
+    cout << "_______" << endl;
+    Q2.printQueue();
+    cout << endl;
+
+    // Sort S1 and S2
+    sort(S1.getElts().begin(), S1.getElts().end(), less<Employee>());
+    sort(S2.getElts().begin(), S2.getElts().end(), less<Employee>());
+
+    // Sort Q1 and Q2
+    sort(Q1.getElts().begin(), Q1.getElts().end(), less<Employee>());
+    sort(Q2.getElts().begin(), Q2.getElts().end(), less<Employee>());
+
+    // Print sorted S1
+    cout << "Sorted Stack #1:" << endl;
+    cout << "_______" << endl;
+    S1.printStack();
+    cout << endl;
+
+    // Print sorted Q1
+    cout << "Sorted Queue #1:" << endl;
+    cout << "_______" << endl;
+    Q1.printQueue();
+    cout << endl;
+
+    // Print sorted S2
+    cout << "Sorted Stack #2:" << endl;
+    cout << "_______" << endl;
+    S2.printStack();
+    cout << endl;
+
+    // Print sorted Q2
+    cout << "Sorted Queue #2:" << endl;
+    cout << "_______" << endl;
+    Q2.printQueue();
+    cout << endl;
+
+    // Create stack and queue for third obj
+    myStack S3;
+    myQueue Q3;
+    // Create S3 and Q3 by adding S1 and S2, Q1 and Q2 respectively
+    S3 = S1 + S2;
+    Q3 = Q1 + Q2;
+
+    // Print myStack S3
+    cout << "STACK #3" << endl;
+    cout << "_______" << endl;
+    S3.printStack();
+
+    // Print myQueue Q3
+    cout << "QUEUE #3" << endl;
+    cout << "_______" << endl;
+    Q3.printQueue();
+
+    // Sort myStack S3
+    sort(S3.getElts().begin(), S3.getElts().end(),less<Employee>());
+
+    // Sort myQueue Q3
+    sort(Q3.getElts().begin(), Q3.getElts().end(), less<Employee>());
+
+    // Print sorted myStack S3
+    cout << "After sorting STACK #3" << endl;
+    cout << "_______" << endl;
+    S3.printStack();
+
+    // Print sorted Q3
+    cout << "After sorting QUEUE #3" << endl;
+    cout << "_______" << endl;
+    Q3.printQueue();
+
+    // Pop all items from S2
+    cout << "Items POPPED from Stack S2" << endl;
+    while (!S2.isEmpty()) {
+        Employee emp = S2.Pop();
+        cout << "POPPING " << emp << endl;
+    }
+
+    // try to print now empty
+    S2.printStack(); // This may produce an error message if S2 is empty
+
+    // Dequeue all elements from Q2
+    cout << "Items DEQUEUED from Queue Q2" << endl;
+    while (!Q2.isEmpty()) {
+        Employee emp = Q2.Dequeue();
+        cout << "DEQUEUEING " << emp << endl;
+    }
+
+    // try to print now empty
+    Q2.printQueue(); // This may produce an error message if Q2 is empty
+
+    // Print an appropriate exit message
+    cout << "Program execution complete." << endl;
+
     return 0;
 }
