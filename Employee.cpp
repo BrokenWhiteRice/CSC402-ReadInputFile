@@ -23,7 +23,7 @@ string Employee::getDeptNum() const { return deptNum; }
 double Employee::getWage() const { return wage; }
 
 // make it like output format
-ostream & operator<<(ostream & out, const Employee & E) {
+ostream & operator<<(ostream & out,  Employee & E) {
     out << E.lastName << " " << E.firstName << " " << E.socsecnum << " " << E.deptNum << " " << E.wage;
     return out;
 }

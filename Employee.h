@@ -1,5 +1,4 @@
-#ifndef EMPLOYEE_H
-#define EMPLOYEE_H
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -34,9 +33,9 @@ public:
 
 
     // output operator
-    friend ostream& operator<<(ostream& out, const Employee& E);
+    friend ostream& operator<<(ostream& out,  Employee& E);
     // < overloads
     bool operator<(const Employee& other) const;
 };
 
-#endif
+

@@ -8,31 +8,27 @@
 #include "myStack.h"
 #include "myQueue.h"
 
-
 using namespace std;
 
-// open and read from a datafile, path entered by user
 int main() {
-    // create myStack and myQueue obj
     myStack S1;
     myQueue Q1;
-    // file inputs
-    string path1, path2;
-    ifstream file1(path1), file2(path2);
+    myStack S2;
+    myQueue Q2;
 
-    // open and read the file
-    cout << "Please enter a path for file #1: ";
-    cin >> path1;
-    cout << "Please enter a path for file #2: ";
-    cin >> path2;
-
-    // create variable for the form
     string lName, fName, ssn, dept;
     double wage;
+    string path1, path2;
 
-    // Read file1 to the end
+    cout << "Please enter a path for file #1: ";
+    cin >> path1;
+    ifstream file1(path1);
+    if (!file1.is_open()) {
+        cerr << "Error: Unable to open file " << path1 << endl;
+        return 1; // Exit with error code 1
+    }
+
     while (file1 >> lName >> fName >> ssn >> dept >> wage) {
-        // create 2 Employee records
         Employee emp1(fName, lName, ssn, dept, wage);
         Employee emp2(fName, lName, ssn, dept, wage);
 
@@ -41,19 +37,21 @@ int main() {
     }
     file1.close();
 
-    // create myStack and myQueue obj
-    myStack S2;
-    myQueue Q2;
-    // Read file #2
+    cout << "Please enter a path for file #2: ";
+    cin >> path2;
+    ifstream file2(path2);
+    if (!file2.is_open()) {
+        cerr << "Error: Unable to open file " << path2 << endl;
+        return 1; // Exit with error code 1
+    }
+
     while (file2 >> lName >> fName >> ssn >> dept >> wage) {
-        // create 2 Employee records
         Employee emp1(fName, lName, ssn, dept, wage);
         Employee emp2(fName, lName, ssn, dept, wage);
 
         S2.Push(emp1);
         Q2.Enqueue(emp2);
     }
-    // Close the second input file
     file2.close();
 
     // Print stack #1
@@ -89,25 +87,27 @@ int main() {
     sort(Q2.getElts().begin(), Q2.getElts().end(), less<Employee>());
 
     // Print sorted S1
-    cout << "Sorted Stack #1:" << endl;
+    cout << "AFTER SORTING ALL VECTORS" << endl;
+    cout << "Stack #1:" << endl;
     cout << "_______" << endl;
     S1.printStack();
     cout << endl;
 
     // Print sorted Q1
-    cout << "Sorted Queue #1:" << endl;
+    cout << "AFTER SORTING ALL VECTORS" << endl;
+    cout << "Queue #1:" << endl;
     cout << "_______" << endl;
     Q1.printQueue();
     cout << endl;
 
     // Print sorted S2
-    cout << "Sorted Stack #2:" << endl;
+    cout << "Stack #2:" << endl;
     cout << "_______" << endl;
     S2.printStack();
     cout << endl;
 
     // Print sorted Q2
-    cout << "Sorted Queue #2:" << endl;
+    cout << "Queue #2:" << endl;
     cout << "_______" << endl;
     Q2.printQueue();
     cout << endl;
@@ -120,6 +120,8 @@ int main() {
     Q3 = Q1 + Q2;
 
     // Print myStack S3
+
+    cout << "AFTER OVERLOADED OPERATOR+" << endl;
     cout << "STACK #3" << endl;
     cout << "_______" << endl;
     S3.printStack();
@@ -130,18 +132,19 @@ int main() {
     Q3.printQueue();
 
     // Sort myStack S3
-    sort(S3.getElts().begin(), S3.getElts().end(),less<Employee>());
+    sort(S3.getElts().begin(), S3.getElts().end(), less<Employee>());
 
     // Sort myQueue Q3
     sort(Q3.getElts().begin(), Q3.getElts().end(), less<Employee>());
 
     // Print sorted myStack S3
-    cout << "After sorting STACK #3" << endl;
+    cout << "AFTER SORTING" << endl;
+    cout << "STACK #3" << endl;
     cout << "_______" << endl;
     S3.printStack();
 
     // Print sorted Q3
-    cout << "After sorting QUEUE #3" << endl;
+    cout << "QUEUE #3" << endl;
     cout << "_______" << endl;
     Q3.printQueue();
 
@@ -154,6 +157,7 @@ int main() {
 
     // try to print now empty
     S2.printStack(); // This may produce an error message if S2 is empty
+    cout << "ERROR - STACK is EMPTY" << endl;
 
     // Dequeue all elements from Q2
     cout << "Items DEQUEUED from Queue Q2" << endl;
@@ -164,7 +168,7 @@ int main() {
 
     // try to print now empty
     Q2.printQueue(); // This may produce an error message if Q2 is empty
-
+    cout << "ERROR - QUEUE is EMPTY" << endl;
     // Print an appropriate exit message
     cout << "Program execution complete." << endl;
 
